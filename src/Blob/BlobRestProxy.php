@@ -347,27 +347,21 @@ class BlobRestProxy extends ServiceRestProxy implements IBlob
      */
     private function createPath($container, $blob = '')
     {
-        if (empty($blob)) {
-            if (!empty($container)) {
-                return $container;
-            } else {
-                return '/' . $container;
-            }
-        } else {
-            $encodedBlob = urlencode($blob);
-            // Unencode the forward slashes to match what the server expects.
-            $encodedBlob = str_replace('%2F', '/', $encodedBlob);
-            // Unencode the backward slashes to match what the server expects.
-            $encodedBlob = str_replace('%5C', '/', $encodedBlob);
-            // Re-encode the spaces (encoded as space) to the % encoding.
-            $encodedBlob = str_replace('+', '%20', $encodedBlob);
-            // Empty container means accessing default container
-            if (empty($container)) {
-                return $encodedBlob;
-            } else {
-                return '/' . $container . '/' . $encodedBlob;
-            }
+        if (empty($blob) && ($blob != '0')) {
+            return empty($container) ? '/' : $container;
         }
+        $encodedBlob = urlencode($blob);
+        // Unencode the forward slashes to match what the server expects.
+        $encodedBlob = str_replace('%2F', '/', $encodedBlob);
+        // Unencode the backward slashes to match what the server expects.
+        $encodedBlob = str_replace('%5C', '/', $encodedBlob);
+        // Re-encode the spaces (encoded as space) to the % encoding.
+        $encodedBlob = str_replace('+', '%20', $encodedBlob);
+        // Empty container means accessing default container
+        if (empty($container)) {
+            return $encodedBlob;
+        }
+        return '/' . $container . '/' . $encodedBlob;
     }
 
     /**
@@ -556,7 +550,6 @@ class BlobRestProxy extends ServiceRestProxy implements IBlob
      */
     private static function getStatusCodeOfLeaseAction($leaseAction)
     {
-        $statusCode = Resources::EMPTY_STRING;
         switch ($leaseAction) {
             case LeaseMode::ACQUIRE_ACTION:
                 $statusCode = Resources::STATUS_CREATED;
@@ -885,7 +878,6 @@ class BlobRestProxy extends ServiceRestProxy implements IBlob
         Validate::notNullOrEmpty($container, 'container');
 
         $method      = Resources::HTTP_PUT;
-        $headers     = array();
         $postParams  = array();
         $queryParams = array(Resources::QP_REST_TYPE => 'container');
         $path        = $this->createPath($container);
@@ -1097,7 +1089,6 @@ class BlobRestProxy extends ServiceRestProxy implements IBlob
         $postParams  = array();
         $queryParams = array();
         $path        = $this->createPath($container);
-        $statusCode  = Resources::STATUS_OK;
 
         if (is_null($options)) {
             $options = new BlobServiceOptions();
@@ -1691,7 +1682,6 @@ class BlobRestProxy extends ServiceRestProxy implements IBlob
         $postParams  = array();
         $queryParams = array();
         $path        = $this->createPath($container, $blob);
-        $statusCode  = Resources::STATUS_CREATED;
 
         if (is_null($options)) {
             $options = new CreateBlobOptions();
@@ -2462,7 +2452,6 @@ class BlobRestProxy extends ServiceRestProxy implements IBlob
         $postParams     = array();
         $queryParams    = $this->createBlobBlockQueryParams($options, $blockId);
         $path           = $this->createPath($container, $blob);
-        $statusCode     = Resources::STATUS_CREATED;
         $contentStream  = Psr7\stream_for($content);
         $body           = $contentStream->getContents();
 
@@ -2543,7 +2532,6 @@ class BlobRestProxy extends ServiceRestProxy implements IBlob
         $postParams     = array();
         $queryParams    = array();
         $path           = $this->createPath($container, $blob);
-        $statusCode     = Resources::STATUS_CREATED;
 
         $contentStream  = Psr7\stream_for($content);
         $length         = $contentStream->getSize();
@@ -2744,7 +2732,6 @@ class BlobRestProxy extends ServiceRestProxy implements IBlob
         );
 
         $method      = Resources::HTTP_PUT;
-        $headers     = array();
         $postParams  = array();
         $queryParams = array();
         $path        = $this->createPath($container, $blob);
