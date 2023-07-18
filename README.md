@@ -1,4 +1,6 @@
-# Microsoft Azure Storage Blob PHP Client Library
+# Microsoft Azure Storage Blob PHP Client Library (Deprecated)
+
+For more details on the retirement and alternatives to using this project, visit [Retirement notice: The Azure Storage PHP client libraries will be retired on 17 March 2024](https://aka.ms/AzStoragePHPSDKRetirement).
 
 This project provides a PHP client library that makes it easy to access Microsoft Azure Storage blob services. For documentation on how to host PHP applications on Microsoft Azure, please see the [Microsoft Azure PHP Developer Center](https://www.windowsazure.com/en-us/develop/php/).
 
